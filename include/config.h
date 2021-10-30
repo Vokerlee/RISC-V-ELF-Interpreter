@@ -6,13 +6,20 @@
 
 namespace risc
 {
-    using PhysAddr = uint32_t;
-    using VirtAddr = uint32_t;
+    using PhysPageOffset = uint32_t;
+    using VirtAddr   = uint32_t;
 
     using RegValue   = uint32_t;
     using InstrValue = uint32_t;
 
-    constexpr size_t kPhysMemSize = 0x1000;
+    constexpr size_t kNOffsetBits = 16;
+
+    constexpr size_t kPhysPageSize = 1 << kNOffsetBits;
+    constexpr size_t kVirtMemSize  = 0x100000000;
+    constexpr size_t kNVirtPages   = kVirtMemSize / kPhysPageSize;
+
+    constexpr VirtAddr kOffsetMask = (1 << kNOffsetBits) - 1;
+
     constexpr size_t kInstrSize   = sizeof(InstrValue);
 
     enum RegId

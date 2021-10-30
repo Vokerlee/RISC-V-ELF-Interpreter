@@ -12,7 +12,7 @@ project ("RISC Interpreter" LANGUAGES CXX)
 set(FILE_NAME "interpr")
 
 set(HEADERS
-        include/opcodes.h
+        include/config.h
 )
 
 set(SOURCES
@@ -22,6 +22,8 @@ set(SOURCES
 # EXECUTABLE FILE
 add_executable(${FILE_NAME} ${SOURCES})
 target_include_directories(${FILE_NAME} PRIVATE include)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lelf")
 
 #########################################################################
 
