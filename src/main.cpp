@@ -8,7 +8,7 @@
 #include <bitset>
 #include <unistd.h>
 #include "config.h"
-#include "virtual_mem.hpp"
+#include "virtual_mem.h"
 
 int main(int argc, char *argv[])
 {
