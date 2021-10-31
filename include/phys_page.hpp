@@ -6,10 +6,14 @@
 
 namespace risc
 {
+    class VirtualMem;
+
     class PhysPage
     {
         size_t mem_size_;
         uint8_t* memory_;
+
+        friend class VirtualMem;
 
     public:
 
@@ -38,7 +42,7 @@ namespace risc
                 case 0x2:
                 case 0x4:
                     memcpy(memory_ + addr, &value, size);
-
+                    break;
                 default:
                     return false;
             }
@@ -59,7 +63,7 @@ namespace risc
                 case 0x2:
                 case 0x4:
                     memcpy(value, memory_ + addr, size);
-                
+                    break;
                 default:
                     return false;
             }

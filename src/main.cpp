@@ -5,7 +5,9 @@
 #include <err.h>
 #include <fcntl.h>
 #include <sysexits.h>
+#include <bitset>
 #include <unistd.h>
+#include "config.h"
 #include "virtual_mem.hpp"
 
 int main(int argc, char *argv[])
@@ -54,11 +56,10 @@ int main(int argc, char *argv[])
     }
 
     risc::VirtualMem memory;
-    bool mem_load_success = memory.load_elf_file(elf_fd, phdrs, ehdr.e_phnum);
+    bool mem_load_success = memory.load_elf_file(elf_fd, phdrs, ehdr);
     if (mem_load_success == false)
         errx(EX_SOFTWARE, "memory loading in virtual space failed: %s. ", elf_errmsg(-1));
 
-    // NOW NOTHING WORKS, NEED TO BE DEBUGGED
 
 
     
