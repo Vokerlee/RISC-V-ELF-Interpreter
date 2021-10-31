@@ -34,8 +34,6 @@ namespace risc
         std::vector<PhysPage *> page_table_; // page table
         std::list<PhysPage *> alloc_pages_;  // to control all allocated pages
 
-    private:
-
         bool allocate_page(VirtAddr virt_address);   
         PhysAddr get_phys_addr(VirtAddr virt_address) const;
 

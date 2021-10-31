@@ -126,26 +126,52 @@ bool VirtualMem::read(VirtAddr virt_address, size_t size, RegValue* value) const
     if (value == nullptr)
         return false;
 
-    PhysAddr phys_addr = get_phys_addr(virt_address);
-    if (phys_addr.is_zero())
-        return false;
+    switch (size)
+    {
+        case 0x1:
+        case 0x2:
+        case 0x4:
+        {
+            PhysAddr phys_addr = get_phys_addr(virt_address);
+            if (phys_addr.is_zero())
+                return false;
 
-    return phys_addr.page_->read(phys_addr.offset_, size, value);
+            return phys_addr.page_->read(phys_addr.offset_, size, value);
+        }
+        default:
+            return false;
+    }
+
+    assert(false);
+    return false;
 }
 
 bool VirtualMem::write(VirtAddr virt_address, size_t size, RegValue value)
 {
-    PhysAddr phys_addr = get_phys_addr(virt_address);
-
-    if (phys_addr.is_zero()) // page is not allocated => allocate page
+    switch (size)
     {
-        if (allocate_page(virt_address) == false)
-            return false;
+        case 0x1:
+        case 0x2:
+        case 0x4:
+        {
+            PhysAddr phys_addr = get_phys_addr(virt_address);
 
-        phys_addr = get_phys_addr(virt_address);
+            if (phys_addr.is_zero()) // page is not allocated => allocate page
+            {
+                if (allocate_page(virt_address) == false)
+                    return false;
+
+                phys_addr = get_phys_addr(virt_address);
+            }
+
+            return phys_addr.page_->write(phys_addr.offset_, size, value);
+        }
+        default:
+            return false;
     }
 
-    return phys_addr.page_->write(phys_addr.offset_, size, value);
+    assert(false);
+    return false;
 }
 
 bool VirtualMem::load_elf_file(int elf_fd, GElf_Phdr* phdrs, GElf_Ehdr ehdr)

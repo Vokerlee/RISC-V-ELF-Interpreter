@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "virtual_mem.h"
+#include "hart.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -60,8 +61,8 @@ int main(int argc, char *argv[])
     if (mem_load_success == false)
         errx(EX_SOFTWARE, "memory loading in virtual space failed: %s. ", elf_errmsg(-1));
 
-
-
+    risc::Hart hart(memory, ehdr.e_entry);
+    hart.execute();
     
     // EVERUTHING IS SUCCESSFUL, JUST FINISH AND EXIT
     delete [] phdrs;
