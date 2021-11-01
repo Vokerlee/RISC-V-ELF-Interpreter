@@ -7,10 +7,11 @@
 namespace risc
 {
     using PhysPageOffset = uint32_t;
-    using VirtAddr   = uint32_t;
+    using VirtAddr       = uint32_t;
 
-    using RegValue   = uint32_t;
-    using InstrValue = uint32_t;
+    using RegValue       = uint32_t;
+    using SignedRegValue = int32_t;
+    using InstrValue     = uint32_t;
 
     constexpr size_t kNOffsetBits = 16;
 
@@ -21,6 +22,12 @@ namespace risc
     constexpr VirtAddr kOffsetMask = (1 << kNOffsetBits) - 1;
 
     constexpr size_t kInstrSize   = sizeof(InstrValue);
+
+    enum DebugRegime
+    {
+        DBG_OFF,
+        DBG_ON
+    };
 
     enum RegId
     {

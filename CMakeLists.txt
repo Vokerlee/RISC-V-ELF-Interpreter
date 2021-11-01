@@ -21,6 +21,7 @@ set(SOURCES
         src/virtual_mem.cpp
         src/hart.cpp
         src/instruction.cpp
+        src/executor.cpp
 )
 
 # EXECUTABLE FILE

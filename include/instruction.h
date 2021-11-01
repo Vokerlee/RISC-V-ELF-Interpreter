@@ -3,13 +3,13 @@
 
 #include "config.h"
 #include "utils.hpp"
+#include "executor.h"
 
 namespace risc
 {
     class Instruction
     {
     public:
-        //Executor executor_;
         InstrClass instr_class_ = RV32I_ERROR;
 
         RegId reg_dest_ = RegIdZero;
@@ -19,9 +19,12 @@ namespace risc
         RegValue immediate_ = 0;
 
         bool decode(InstrValue instr);
+        
+        Executor* executor_ = nullptr;
 
     public:
         Instruction(InstrValue instr);
+        ~Instruction();
 
         bool is_corrupted() const;
     };

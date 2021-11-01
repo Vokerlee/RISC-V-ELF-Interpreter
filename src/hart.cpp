@@ -46,23 +46,16 @@ bool Hart::execute()
     {
         InstrValue instr_code = 0;
 
-        if (memory_.read(pc_, kInstrSize, &instr_code) == false)
+        if (memory_.read(pc_, kInstrSize, &instr_code) == false) // fetching
             return false;
-
-        std::bitset<32> x(instr_code);
-        std::cout << x << std::endl;
-        
-        Instruction instr(instr_code);
+            
+        Instruction instr(instr_code); // decoding
         if (instr.is_corrupted())
             break;
         
         next_pc_ = pc_ + kInstrSize;
-        std::cout << "\nclass = " << instr.instr_class_ << std::endl;
-        std::cout << "rs1 = " << instr.reg_src1_ << std::endl; 
-        std::cout << "rs2 = " << instr.reg_src2_ << std::endl;
-        std::cout << "rd  = " << instr.reg_dest_ << std::endl;
-        std::cout << "imm = " << instr.immediate_ << std::endl;
-        //insn.execute(this, insn);
+        std::cout << "class = " << instr.instr_class_ << std::endl;
+        (*(instr.executor_))(this, instr);
         pc_ = next_pc_;
     }
 
