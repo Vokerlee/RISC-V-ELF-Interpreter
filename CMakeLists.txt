@@ -19,6 +19,8 @@ set(SOURCES
         src/main.cpp
         src/phys_page.cpp
         src/virtual_mem.cpp
+        src/hart.cpp
+        src/instruction.cpp
 )
 
 # EXECUTABLE FILE

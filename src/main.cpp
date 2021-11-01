@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "virtual_mem.h"
-#include "hart.hpp"
+#include "hart.h"
 
 int main(int argc, char *argv[])
 {
