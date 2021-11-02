@@ -10,7 +10,9 @@ using namespace risc;
 Hart::Hart(VirtualMem& virt_mem, VirtAddr entry) :
     memory_(virt_mem),
     entry_(entry)
-{}
+{
+    regs_[2] = virt_mem.get_stack_addr();
+}
 
 RegValue Hart::get_reg(RegId id) const
 {
@@ -48,16 +50,25 @@ bool Hart::execute()
 
         if (memory_.read(pc_, kInstrSize, &instr_code) == false) // fetching
             return false;
-            
+
         Instruction instr(instr_code); // decoding
         if (instr.is_corrupted())
             break;
         
         next_pc_ = pc_ + kInstrSize;
-        std::cout << "class = " << instr.instr_class_ << std::endl;
         (*(instr.executor_))(this, instr);
         pc_ = next_pc_;
     }
 
     return true;
+}
+
+bool Hart::read(VirtAddr virt_address, size_t size, RegValue* value)
+{
+    return memory_.read(virt_address, size, value);
+}
+
+bool Hart::write(VirtAddr virt_address, size_t size, RegValue value)
+{
+    return memory_.write(virt_address, size, value);
 }

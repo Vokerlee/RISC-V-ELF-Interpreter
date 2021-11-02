@@ -34,6 +34,10 @@ namespace risc
         std::vector<PhysPage *> page_table_; // page table
         std::list<PhysPage *> alloc_pages_;  // to control all allocated pages
 
+        VirtAddr stack_addr_;
+
+        bool is_valid_ = true;
+
         bool allocate_page(VirtAddr virt_address);   
         PhysAddr get_phys_addr(VirtAddr virt_address) const;
 
@@ -42,13 +46,17 @@ namespace risc
 
     public:
 
-        VirtualMem(size_t virt_mem_size = kVirtMemSize);
+        VirtualMem(size_t virt_mem_size = kVirtMemSize, VirtAddr stack_address = kDefaultStackAddress);
         ~VirtualMem();
 
-        bool read(VirtAddr virt_address, size_t size, RegValue* value) const;
-        bool write(VirtAddr virt_address, size_t size, RegValue value);
+        bool read (VirtAddr virt_address, size_t size, RegValue* value) const;
+        bool write(VirtAddr virt_address, size_t size, RegValue  value);
+
+        VirtAddr get_stack_addr() const;
 
         bool load_elf_file(int elf_fd, GElf_Phdr* phdrs, GElf_Ehdr ehdr);
+
+        bool is_valid() const;
     };
 }
 

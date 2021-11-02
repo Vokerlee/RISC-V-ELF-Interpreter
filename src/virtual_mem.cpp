@@ -111,9 +111,14 @@ size_t VirtualMem::next_page_offset(VirtAddr address) const
     return kPhysPageSize - remainder;
 }
 
-VirtualMem::VirtualMem(size_t virt_mem_size) :
-    page_table_(virt_mem_size / kPhysPageSize, nullptr)
-{}
+VirtualMem::VirtualMem(size_t virt_mem_size, VirtAddr stack_address) :
+    page_table_(virt_mem_size / kPhysPageSize, nullptr),
+    stack_addr_(stack_address)
+{
+    bool stack_alloc_state = allocate_page(stack_address);
+    if (stack_alloc_state == false)
+        is_valid_ = false;
+}
 
 VirtualMem::~VirtualMem()
 {
@@ -123,6 +128,9 @@ VirtualMem::~VirtualMem()
 
 bool VirtualMem::read(VirtAddr virt_address, size_t size, RegValue* value) const
 {
+    if (is_valid() == false)
+        return false;
+
     if (value == nullptr)
         return false;
 
@@ -148,6 +156,9 @@ bool VirtualMem::read(VirtAddr virt_address, size_t size, RegValue* value) const
 
 bool VirtualMem::write(VirtAddr virt_address, size_t size, RegValue value)
 {
+    if (is_valid() == false)
+        return false;
+
     switch (size)
     {
         case 0x1:
@@ -174,9 +185,23 @@ bool VirtualMem::write(VirtAddr virt_address, size_t size, RegValue value)
     return false;
 }
 
+bool VirtualMem::is_valid() const
+{
+    return is_valid_;
+}
+
+VirtAddr VirtualMem::get_stack_addr() const
+{
+    return stack_addr_;
+}
+
 bool VirtualMem::load_elf_file(int elf_fd, GElf_Phdr* phdrs, GElf_Ehdr ehdr)
 {
-    assert(phdrs);
+    if (is_valid() == false)
+        return false;
+
+    if (phdrs == nullptr)
+        return false;
 
     struct stat elf_stat = {0};
 

@@ -13,6 +13,11 @@ namespace risc
     using SignedRegValue = int32_t;
     using InstrValue     = uint32_t;
 
+    using Byte           = uint8_t;
+    using SignedByte     = int8_t;
+    using HWord          = uint16_t;
+    using SignedHWord    = int16_t;
+
     constexpr size_t kNOffsetBits = 16;
 
     constexpr size_t kPhysPageSize = 1 << kNOffsetBits;
@@ -21,7 +26,9 @@ namespace risc
 
     constexpr VirtAddr kOffsetMask = (1 << kNOffsetBits) - 1;
 
-    constexpr size_t kInstrSize   = sizeof(InstrValue);
+    constexpr size_t kInstrSize = sizeof(InstrValue);
+
+    constexpr size_t kDefaultStackAddress = 0x30000000;
 
     enum DebugRegime
     {

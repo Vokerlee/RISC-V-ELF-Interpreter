@@ -28,6 +28,9 @@ namespace risc
         RegValue get_pc() const;
         
         RegValue branch(RegValue target);
+
+        bool read (VirtAddr virt_address, size_t size, RegValue* value);
+        bool write(VirtAddr virt_address, size_t size, RegValue  value);
         
         bool execute();
     };

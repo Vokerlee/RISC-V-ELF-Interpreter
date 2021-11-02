@@ -148,7 +148,8 @@ bool Instruction::decode(InstrValue instr)
                     return false;
             }
 
-            reg_src1_ = static_cast<RegId>(get_bits<19, 15>(instr) >> 15);
+            reg_src1_  = static_cast<RegId>(get_bits<19, 15>(instr) >> 15); 
+            reg_dest_  = static_cast<RegId>(get_bits<11, 7>(instr) >> 7);
             immediate_ = static_cast<SignedRegValue>(get_bits<31, 20>(instr)) >> 20;
 
             break;

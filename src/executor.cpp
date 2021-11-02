@@ -36,7 +36,17 @@ bool ExecutorRV32I_JALR::operator()(Hart* hart, const Instruction& instr)
 
 bool ExecutorRV32I_BEQ::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": sb x" << instr.reg_src2_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+
+    if (hart->write(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x1, hart->get_reg(instr.reg_src2_)) == false)
+        return false;
+
+    std::cout << std::endl;
+    
     return true;
 }
 
@@ -72,49 +82,154 @@ bool ExecutorRV32I_BGEU::operator()(Hart* hart, const Instruction& instr)
 
 bool ExecutorRV32I_LB::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lb x" << instr.reg_dest_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+        
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "before: x" << instr.reg_dest_  << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+
+    RegValue load_byte{};
+    if (hart->read(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x1, &load_byte) == false)
+        return false;
+
+    hart->set_reg(instr.reg_dest_, static_cast<SignedRegValue>(static_cast<SignedByte>(load_byte)));
+
+    std::cout << "after: x" << instr.reg_dest_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+    
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_LH::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lh x" << instr.reg_dest_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+        
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "before: x" << instr.reg_dest_  << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+
+    RegValue load_hword{};
+    if (hart->read(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x2, &load_hword) == false)
+        return false;
+
+    hart->set_reg(instr.reg_dest_, static_cast<SignedRegValue>(static_cast<SignedHWord>(load_hword)));
+
+    std::cout << "after: x" << instr.reg_dest_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+    
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_LW::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lw x" << instr.reg_dest_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+        
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "before: x" << instr.reg_dest_  << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+
+    RegValue load_word{};
+    if (hart->read(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x4, &load_word) == false)
+        return false;
+
+    hart->set_reg(instr.reg_dest_, static_cast<SignedRegValue>(load_word));
+
+    std::cout << "after: x" << instr.reg_dest_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+    
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_LBU::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lbu x" << instr.reg_dest_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+        
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "before: x" << instr.reg_dest_  << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+
+    RegValue load_byte{};
+    if (hart->read(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x1, &load_byte) == false)
+        return false;
+
+    hart->set_reg(instr.reg_dest_, load_byte);
+
+    std::cout << "after: x" << instr.reg_dest_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+    
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_LHU::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lhu x" << instr.reg_dest_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+        
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "before: x" << instr.reg_dest_  << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+
+    RegValue load_hword{};
+    if (hart->read(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x2, &load_hword) == false)
+        return false;
+
+    hart->set_reg(instr.reg_dest_, load_hword);
+
+    std::cout << "after: x" << instr.reg_dest_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_dest_)) << std::endl;
+    
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_SB::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": sb x" << instr.reg_src2_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+
+    if (hart->write(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x1, hart->get_reg(instr.reg_src2_)) == false)
+        return false;
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_SH::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": sh x" << instr.reg_src2_ <<
+        ", "  << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+
+    if (hart->write(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x2, hart->get_reg(instr.reg_src2_)) == false)
+        return false;
+        
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_SW::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": sw x" << instr.reg_src2_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+
+    if (hart->write(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x4, hart->get_reg(instr.reg_src2_)) == false)
+        return false;
+        
+    std::cout << std::endl;
+
     return true;
 }
 
