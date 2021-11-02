@@ -1,4 +1,4 @@
-# Multiplier example
+# Factorial example
 
 To compile factorial program with RISC-V GNU Compiler Toolchain do the following;
 
