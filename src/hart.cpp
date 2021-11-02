@@ -57,6 +57,7 @@ bool Hart::execute()
         
         next_pc_ = pc_ + kInstrSize;
         (*(instr.executor_))(this, instr);
+        regs_[0] = 0; // x0 must always be zero
         pc_ = next_pc_;
     }
 

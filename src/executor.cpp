@@ -12,71 +12,149 @@ using namespace risc;
 
 bool ExecutorRV32I_LUI::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": lui x" << instr.reg_dest_ << ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+    
+    hart->set_reg(instr.reg_dest_, instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_AUIPC::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "AUIPC was called!\n";
+    std::cout << hart->get_pc() << ": auipc x" << instr.reg_dest_ << ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+    
+    hart->set_reg(instr.reg_dest_, instr.immediate_ + hart->get_pc());
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_JAL::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": jal x" << instr.reg_dest_ << ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+    
+    hart->set_reg(instr.reg_dest_, hart->get_pc() + sizeof(InstrValue));
+    hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_JALR::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": jalr x" << instr.reg_dest_ << ", " << static_cast<SignedRegValue>(instr.immediate_) << 
+        "(x" << instr.reg_src1_ << ")" << std::endl;
+
+    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    
+    hart->set_reg(instr.reg_dest_, hart->get_pc() + sizeof(InstrValue));
+    RegValue target = hart->get_reg(instr.reg_src1_) + instr.immediate_;
+    RegValue mask = (1 << (BITS_PER_BYTE * sizeof(RegValue))) - 2;
+
+    hart->branch(target & mask);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_BEQ::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << hart->get_pc() << ": sb x" << instr.reg_src2_ <<
-         ", " << static_cast<SignedRegValue>(instr.immediate_) << "(x" << instr.reg_src1_ << ")" << std::endl;
+    std::cout << hart->get_pc() << ": beq x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
 
     std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
-    std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
 
-    if (hart->write(hart->get_reg(instr.reg_src1_) + instr.immediate_, 0x1, hart->get_reg(instr.reg_src2_)) == false)
-        return false;
+    if (hart->get_reg(instr.reg_src2_) == hart->get_reg(instr.reg_src1_))
+        hart->branch(hart->get_pc() + instr.immediate_);
 
     std::cout << std::endl;
-    
+
     return true;
 }
 
 bool ExecutorRV32I_BNE::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": bne x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
+
+    if (hart->get_reg(instr.reg_src2_) != hart->get_reg(instr.reg_src1_))
+        hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_BLT::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": blt x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
+
+    if (static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) > static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)))
+        hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_BGE::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": bge x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
+
+    if (static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) <= static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)))
+        hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_BLTU::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": bltu x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
+
+    if (hart->get_reg(instr.reg_src2_) > hart->get_reg(instr.reg_src1_))
+        hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
 bool ExecutorRV32I_BGEU::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
+    std::cout << hart->get_pc() << ": bgeu x" << instr.reg_src2_ << ", x" << instr.reg_src1_ <<
+         ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
+
+    std::cout << "x" << instr.reg_src2_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src2_)) << std::endl;
+    std::cout << "x" << instr.reg_src1_ << " = " << static_cast<SignedRegValue>(hart->get_reg(instr.reg_src1_)) << std::endl;
+
+    if (hart->get_reg(instr.reg_src2_) <= hart->get_reg(instr.reg_src1_))
+        hart->branch(hart->get_pc() + instr.immediate_);
+
+    std::cout << std::endl;
+
     return true;
 }
 
@@ -628,18 +706,18 @@ bool ExecutorRV32I_AND::operator()(Hart* hart, const Instruction& instr)
 
 bool ExecutorRV32I_FENCE::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
-    return true;
+    std::cout << "FORBIDDEN COMMAND FENCE IS CALLED!\n";
+    return false;;
 }
 
 bool ExecutorRV32I_ECALL::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
-    return true;
+    std::cout << "FORBIDDEN COMMAND ECALL IS CALLED!\n";
+    return false;
 }
 
 bool ExecutorRV32I_EBREAK::operator()(Hart* hart, const Instruction& instr)
 {
-    std::cout << "LUI was called!\n";
-    return true;
+    std::cout << "FORBIDDEN COMMAND EBREAK IS CALLED!\n";
+    return false;;
 }
