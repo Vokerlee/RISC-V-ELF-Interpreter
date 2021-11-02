@@ -4,16 +4,12 @@
 cmake_minimum_required (VERSION 3.8)
 
 # PROJECT PROPERTIES
-project ("RISC Interpreter" LANGUAGES CXX)
+project ("RISC-V Interpreter" LANGUAGES CXX)
 
 #########################################################################
 
 # EXECUTABLE FILE PROPERTIES
-set(FILE_NAME "interpr")
-
-set(HEADERS
-        include/config.h
-)
+set(FILE_NAME "RISC-V-Interpreter")
 
 set(SOURCES
         src/main.cpp
@@ -28,9 +24,10 @@ set(SOURCES
 add_executable(${FILE_NAME} ${SOURCES})
 target_include_directories(${FILE_NAME} PRIVATE include)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lelf")
-
 #########################################################################
+
+# LINKING WITH LIBELF
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lelf")
 
 # ASSEMBLY OPTIONS
 set_target_properties(${FILE_NAME} PROPERTIES

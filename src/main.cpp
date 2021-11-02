@@ -14,9 +14,9 @@
 int main(int argc, char *argv[])
 {
     if (argc < 2)
-        err(EX_USAGE, "error: too few arguments");
+        errx(EX_USAGE, "error: too few arguments");
     else if (argc > 3)
-        err(EX_USAGE, "error: too many arguments");
+        errx(EX_USAGE, "error: too many arguments");
 
     // INITIALIZATION
     if (elf_version(EV_CURRENT) == EV_NONE)
