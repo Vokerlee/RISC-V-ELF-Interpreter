@@ -11,7 +11,7 @@ Hart::Hart(VirtualMem& virt_mem, VirtAddr entry) :
     memory_(virt_mem),
     entry_(entry)
 {
-    regs_[2] = virt_mem.get_stack_addr();
+    regs_[RegSP] = virt_mem.get_stack_addr();
 }
 
 RegValue Hart::get_reg(RegId id) const
@@ -34,6 +34,11 @@ RegValue Hart::get_pc() const
     return pc_;
 }
 
+RegValue Hart::get_next_pc() const
+{
+    return next_pc_;
+}
+
 RegValue Hart::branch(RegValue target)
 {
     return next_pc_ = target;
@@ -42,7 +47,9 @@ RegValue Hart::branch(RegValue target)
 bool Hart::execute()
 {
     pc_      = entry_;
-    next_pc_ = entry_;
+    next_pc_ = entry_ + kInstrSize;
+
+    regs_[RegRA] = kDefaultReturnAddress;
 
     while(true)
     {
@@ -53,11 +60,13 @@ bool Hart::execute()
 
         Instruction instr(instr_code); // decoding
         if (instr.is_corrupted())
-            break;
+            return false;
         
-        next_pc_ = pc_ + kInstrSize;
-        (*(instr.executor_))(this, instr);
-        regs_[0] = 0; // x0 must always be zero
+        next_pc_ = pc_ + kInstrSize; // to know the next instruction
+
+        (*(instr.executor_))(this, instr); // executing
+
+        regs_[RegIdZero] = 0; // x0 must always be zero
         pc_ = next_pc_;
     }
 

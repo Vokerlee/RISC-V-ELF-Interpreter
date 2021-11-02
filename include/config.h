@@ -6,19 +6,26 @@
 
 namespace risc
 {
+    // FOR VIRTUAL MEMORY
     using PhysPageOffset = uint32_t;
     using VirtAddr       = uint32_t;
 
+    // MEMORY TYPES
     using RegValue       = uint32_t;
     using SignedRegValue = int32_t;
-    using InstrValue     = uint32_t;
 
     using Byte           = uint8_t;
     using SignedByte     = int8_t;
+
     using HWord          = uint16_t;
     using SignedHWord    = int16_t;
 
-    constexpr size_t kNOffsetBits = 16;
+    // INSTRUCTION TYPE
+    using InstrValue     = uint32_t;
+    constexpr size_t kInstrSize = sizeof(InstrValue);
+
+    // FOR VIRTUAL MEMORY IMPLEMENTATION
+    constexpr size_t kNOffsetBits  = 16;
 
     constexpr size_t kPhysPageSize = 1 << kNOffsetBits;
     constexpr size_t kVirtMemSize  = 0x100000000;
@@ -26,9 +33,11 @@ namespace risc
 
     constexpr VirtAddr kOffsetMask = (1 << kNOffsetBits) - 1;
 
-    constexpr size_t kInstrSize = sizeof(InstrValue);
+    // STACK SIZE
+    constexpr VirtAddr kDefaultStackAddress = 0x30000000;
 
-    constexpr size_t kDefaultStackAddress = 0x30000000;
+    // RETURN ADDRESS FROM THE PROGRAMM
+    constexpr VirtAddr kDefaultReturnAddress = 0x50000000;
 
     enum DebugRegime
     {
@@ -56,7 +65,9 @@ namespace risc
         REG_X30 = 30, REG_X31 = 31,
 
         RegIdZero = REG_X0,
-        RegFileGprSize = 0x20,
+        RegSP     = REG_X2,
+        RegRA     = REG_X1,
+        RegFileGprSize = 0x20
     };
 
     enum InstrClass // ONLY RV32I BASE INSTRUCTIONS

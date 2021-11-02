@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
 
     risc::Hart hart(memory, ehdr.e_entry);
     hart.execute();
+
+    std::cout << "Interpreter has successfully finished execution of " << argv[1] << " elf file" << std::endl;
     
     // EVERUTHING IS SUCCESSFUL, JUST FINISH AND EXIT
     delete [] phdrs;

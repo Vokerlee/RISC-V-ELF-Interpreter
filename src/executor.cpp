@@ -36,7 +36,7 @@ bool ExecutorRV32I_JAL::operator()(Hart* hart, const Instruction& instr)
 {
     std::cout << hart->get_pc() << ": jal x" << instr.reg_dest_ << ", " << static_cast<SignedRegValue>(instr.immediate_) << std::endl;
     
-    hart->set_reg(instr.reg_dest_, hart->get_pc() + sizeof(InstrValue));
+    hart->set_reg(instr.reg_dest_, hart->get_next_pc());
     hart->branch(hart->get_pc() + instr.immediate_);
 
     std::cout << std::endl;
@@ -51,7 +51,7 @@ bool ExecutorRV32I_JALR::operator()(Hart* hart, const Instruction& instr)
 
     std::cout << "x" << instr.reg_src1_ << " = " << hart->get_reg(instr.reg_src1_) << std::endl;
     
-    hart->set_reg(instr.reg_dest_, hart->get_pc() + sizeof(InstrValue));
+    hart->set_reg(instr.reg_dest_, hart->get_next_pc());
     RegValue target = hart->get_reg(instr.reg_src1_) + instr.immediate_;
     RegValue mask = (1 << (BITS_PER_BYTE * sizeof(RegValue))) - 2;
 

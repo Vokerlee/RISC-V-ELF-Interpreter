@@ -26,6 +26,7 @@ namespace risc
         void set_reg(RegId id, RegValue value);
         
         RegValue get_pc() const;
+        RegValue get_next_pc() const;
         
         RegValue branch(RegValue target);
 
