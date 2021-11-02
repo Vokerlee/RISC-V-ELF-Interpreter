@@ -1,0 +1,76 @@
+
+factorial.out:     формат файла elf32-littleriscv
+
+
+Дизассемблирование раздела .text:
+
+00010054 <main>:
+   10054:	fe010113          	addi	sp,sp,-32
+   10058:	00112e23          	sw	ra,28(sp)
+   1005c:	00812c23          	sw	s0,24(sp)
+   10060:	02010413          	addi	s0,sp,32
+   10064:	00600793          	li	a5,6
+   10068:	fef42623          	sw	a5,-20(s0)
+   1006c:	00600513          	li	a0,6
+   10070:	08c000ef          	jal	ra,100fc <factorial>
+   10074:	fea42423          	sw	a0,-24(s0)
+   10078:	00000793          	li	a5,0
+   1007c:	00078513          	mv	a0,a5
+   10080:	01c12083          	lw	ra,28(sp)
+   10084:	01812403          	lw	s0,24(sp)
+   10088:	02010113          	addi	sp,sp,32
+   1008c:	00008067          	ret
+
+00010090 <mult>:
+   10090:	fd010113          	addi	sp,sp,-48
+   10094:	02812623          	sw	s0,44(sp)
+   10098:	03010413          	addi	s0,sp,48
+   1009c:	fca42e23          	sw	a0,-36(s0)
+   100a0:	fcb42c23          	sw	a1,-40(s0)
+   100a4:	fe042623          	sw	zero,-20(s0)
+   100a8:	0380006f          	j	100e0 <mult+0x50>
+   100ac:	fd842783          	lw	a5,-40(s0)
+   100b0:	0017f793          	andi	a5,a5,1
+   100b4:	00078a63          	beqz	a5,100c8 <mult+0x38>
+   100b8:	fec42703          	lw	a4,-20(s0)
+   100bc:	fdc42783          	lw	a5,-36(s0)
+   100c0:	00f707b3          	add	a5,a4,a5
+   100c4:	fef42623          	sw	a5,-20(s0)
+   100c8:	fd842783          	lw	a5,-40(s0)
+   100cc:	4017d793          	srai	a5,a5,0x1
+   100d0:	fcf42c23          	sw	a5,-40(s0)
+   100d4:	fdc42783          	lw	a5,-36(s0)
+   100d8:	00179793          	slli	a5,a5,0x1
+   100dc:	fcf42e23          	sw	a5,-36(s0)
+   100e0:	fd842783          	lw	a5,-40(s0)
+   100e4:	fc0794e3          	bnez	a5,100ac <mult+0x1c>
+   100e8:	fec42783          	lw	a5,-20(s0)
+   100ec:	00078513          	mv	a0,a5
+   100f0:	02c12403          	lw	s0,44(sp)
+   100f4:	03010113          	addi	sp,sp,48
+   100f8:	00008067          	ret
+
+000100fc <factorial>:
+   100fc:	fe010113          	addi	sp,sp,-32
+   10100:	00112e23          	sw	ra,28(sp)
+   10104:	00812c23          	sw	s0,24(sp)
+   10108:	02010413          	addi	s0,sp,32
+   1010c:	fea42623          	sw	a0,-20(s0)
+   10110:	fec42783          	lw	a5,-20(s0)
+   10114:	00f04663          	bgtz	a5,10120 <factorial+0x24>
+   10118:	00100793          	li	a5,1
+   1011c:	0280006f          	j	10144 <factorial+0x48>
+   10120:	fec42783          	lw	a5,-20(s0)
+   10124:	fff78793          	addi	a5,a5,-1
+   10128:	00078513          	mv	a0,a5
+   1012c:	fd1ff0ef          	jal	ra,100fc <factorial>
+   10130:	00050793          	mv	a5,a0
+   10134:	00078593          	mv	a1,a5
+   10138:	fec42503          	lw	a0,-20(s0)
+   1013c:	f55ff0ef          	jal	ra,10090 <mult>
+   10140:	00050793          	mv	a5,a0
+   10144:	00078513          	mv	a0,a5
+   10148:	01c12083          	lw	ra,28(sp)
+   1014c:	01812403          	lw	s0,24(sp)
+   10150:	02010113          	addi	sp,sp,32
+   10154:	00008067          	ret
