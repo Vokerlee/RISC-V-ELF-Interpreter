@@ -5,8 +5,8 @@ Here is a simple implementation of RISC-V instructions interpreter with ELF file
 There are the following features of the project:
 
 * Firstly ELF file is parsed and checked for correctness.
-* The program in ELF file is loaded into virtual memory (paging memory), as it usually OS do.
-* The interpreter supports all instructions from RV32I set, except `ECALL`, `EBREAK` and `FENCE`.
+* The program in ELF file is loaded into virtual memory (paging memory), as it usually OS does.
+* The interpreter supports all instructions from RV32I set, except `ECALL`, `EBREAK` and `FENCE` instructions.
 
 # How to compile
 
@@ -31,13 +31,13 @@ The usage is plain: you are to create ELF file (with RISC-V architecture) and ne
 ./RISC-V-Interpreter elf_file_name.out
 ```
 
-All information about completed instructions is placed in `stdout`. It is recommended to redirect stream to another file, using the launch of the program in the following form:
+All information about executed instructions is placed in `stdout`stream. It is recommended to redirect stream to another file, using the launch of the program in the following form:
 
 ```console
 ./RISC-V-Interpreter elf_file_name.out > log_instructions.log
 ```
 
-Mind that you cannot use any library while compiling your ELF program, otherwise the interpreter will not work.
+Mind that you cannot use any library while compiling your ELF program, otherwise the interpreter will not work (it doesn't support system calls).
 
 # How to create ELF file with RISC-V architecture
 
@@ -85,5 +85,5 @@ Also you can use `objdump` to check for correctness ELF file:
 riscv32-unknown-elf-objdump -S test_prog.out > test_prog.dump
 ```
 
-Different examples you can see in `examples` folder.
+Different examples of compilation and usage of the program you can see in `examples` folder.
 
